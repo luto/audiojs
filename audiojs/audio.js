@@ -179,6 +179,7 @@
             p = this.duration * percent,
             m = Math.floor(p / 60),
             s = Math.floor(p % 60);
+        this.currentTime = p;
         played.innerHTML = ((m<10?'0':'')+m+':'+(s<10?'0':'')+s);
       }
     },
@@ -233,6 +234,7 @@
 
       // Return a new `audiojs` instance.
       var audio = new container[audiojsInstance](element, s);
+      audio.currentTime = 0;
 
       // If css has been passed in, dynamically inject it into the `<head>`.
       if (s.css) this.helpers.injectCss(audio, s.css);
