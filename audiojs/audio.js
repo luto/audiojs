@@ -68,7 +68,7 @@
             <div class="loaded"></div> \
           </div> \
           <div class="time"> \
-            <em class="played">00:00</em>/<strong class="duration">00:00</strong> \
+            <em class="played">0:00:00</em>/<strong class="duration">0:00:00</strong> \
           </div> \
           <div class="error-message"></div>',
         playPauseClass: 'play-pause',
@@ -94,7 +94,7 @@
         .audiojs .play-pause { width: 25px; height: 40px; padding: 4px 6px; margin: 0px; float: left; overflow: hidden; border-right: 1px solid #000; } \
         .audiojs p { display: none; width: 25px; height: 40px; margin: 0px; cursor: pointer; } \
         .audiojs .play { display: block; } \
-        .audiojs .scrubber { position: relative; float: left; width: calc(100% - 175px); width: -webkit-calc(100% - 175px); background: #5a5a5a; height: 14px; margin: 10px; border-top: 1px solid #3f3f3f; border-left: 0px; border-bottom: 0px; overflow: hidden; } \
+        .audiojs .scrubber { position: relative; float: left; width: calc(100% - 195px); width: -webkit-calc(100% - 195px); background: #5a5a5a; height: 14px; margin: 10px; border-top: 1px solid #3f3f3f; border-left: 0px; border-bottom: 0px; overflow: hidden; } \
         .audiojs .progress { position: absolute; top: 0px; left: 0px; height: 14px; width: 0px; background: #ccc; z-index: 1; \
           background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #ccc), color-stop(0.5, #ddd), color-stop(0.51, #ccc), color-stop(1, #ccc)); \
           background-image: -moz-linear-gradient(center top, #ccc 0%, #ddd 50%, #ccc 51%, #ccc 100%); } \
@@ -147,11 +147,9 @@
       },
       loadStarted: function() {
         var player = this.settings.createPlayer,
-            duration = getByClass(player.durationClass, this.wrapper),
-            m = Math.floor(this.duration / 60),
-            s = Math.floor(this.duration % 60);
+            duration = getByClass(player.durationClass, this.wrapper);
         container[audiojs].helpers.removeClass(this.wrapper, player.loadingClass);
-        duration.innerHTML = ((m<10?'0':'')+m+':'+(s<10?'0':'')+s);
+        duration.innerHTML = formatTime(this.duration);
       },
       loadProgress: function(percent) {
         var player = this.settings.createPlayer,
@@ -176,11 +174,9 @@
         progress.style.width = (100 * percent) + '%';
 
         var played = getByClass(player.playedClass, this.wrapper),
-            p = this.duration * percent,
-            m = Math.floor(p / 60),
-            s = Math.floor(p % 60);
+            p = this.duration * percent;
         this.currentTime = p;
-        played.innerHTML = ((m<10?'0':'')+m+':'+(s<10?'0':'')+s);
+        played.innerHTML = formatTime(p);
       }
     },
 
@@ -698,6 +694,20 @@
       }
     }
     return matches.length > 1 ? matches : matches[0];
+  };
+
+  var formatTime = function (time) {
+    var h = Math.floor(time / 3600),
+        m = Math.floor(time / 60) % 60,
+        s = Math.floor(time % 60);
+
+    return h + ':' + pad(m, 2) + ':' + pad(s, 2);
+
+    // http://stackoverflow.com/a/10073764
+    function pad(n, width) {
+      n = n + '';
+      return n.length >= width ? n : new Array(width - n.length + 1).join('0') + n;
+    }
   };
 // The global variable names are passed in here and can be changed if they conflict with anything else.
 })('audiojs', 'audiojsInstance', this);
